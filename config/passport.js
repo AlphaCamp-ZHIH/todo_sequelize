@@ -14,15 +14,19 @@ module.exports = () => {
           if (user) {
             return bcrypt.compare(password, user.password).then((isMatch) => {
               if (isMatch) {
-                console.log('登入成功')
+                console.log("登入成功");
                 return done(null, user);
               }
-              console.log('密碼錯誤')
-              return done(null, false);
+              console.log("密碼錯誤");
+              return done(
+                null,
+                false,
+                req.flash("warning_msg", "請輸入正確密碼")
+              );
             });
           }
-          console.log('帳號不存在')
-          return done(null, false);
+          console.log("帳號不存在");
+          return done(null, false, req.flash("warning_msg", "此帳號不存在"));
         });
       }
     )
