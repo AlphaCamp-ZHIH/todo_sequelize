@@ -1,13 +1,15 @@
-const express = require('express');
+const express = require("express");
 
 const router = express.Router();
 
-const home = require('./modules/home');
-const users = require('./modules/users');
-const todos = require('./modules/todos');
+const home = require("./modules/home");
+const users = require("./modules/users");
+const todos = require("./modules/todos");
 
-router.use('/', home);
-router.use('/users', users);
-router.use('/todos', todos);
+const authenticator = require("../middleware/middleware").authenticator;
+
+router.use("/users", users);
+router.use("/todos", authenticator, todos);
+router.use("/", authenticator, home);
 
 module.exports = router;

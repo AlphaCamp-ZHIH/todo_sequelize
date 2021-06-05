@@ -28,6 +28,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 usePassport();
 
+app.use((req, res, next) =>{
+  res.locals.isAuthenticated = req.isAuthenticated();
+  res.locals.user = req.user;
+  
+  return next();
+})
 
 app.use(routes);
 

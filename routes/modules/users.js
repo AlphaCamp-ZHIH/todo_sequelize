@@ -7,13 +7,14 @@ const User = db.User;
 
 const router = express.Router();
 
-router.get("/login", (req, res) => {});
+router.get("/login", (req, res) => res.render('login'));
 
 router.post(
   "/login",
   passport.authenticate("local", {
     successRedirect: "/",
     failureRedirect: "/users/login",
+
   })
 );
 
@@ -23,15 +24,16 @@ router.post("/register", (req, res) => {
   const { name, email, password, confirmPassword } = req.body;
   User.findOne({ where: { email } }).then((user) => {
     if (user) {
-      return res.render("register",{
+      console.log("User already exists");
+      return res.render("register", {
         name,
         email,
         password,
-        confirmPassword
+        confirmPassword,
       });
     }
     return bcrypt
-      .getSalt(10)
+      .genSalt(10)
       .then((salt) => bcrypt.hash(password, salt))
       .then((hash) =>
         User.create({
@@ -41,10 +43,14 @@ router.post("/register", (req, res) => {
         })
       )
       .then(() => res.redirect("/"))
-      .catch((e) => console.log(e));
+      .catch((err) => console.log(err));
   });
 });
 
-router.get("/logout", (req, res) => {});
+router.get("/logout", (req, res) => {
+  
+  req.logout();
+  return res.redirect('/users/login');
+});
 
 module.exports = router;

@@ -9,7 +9,23 @@ module.exports = () => {
   passport.use(
     new LocalStrategy(
       { usernameField: "email", passReqToCallback: true },
-      (req, email, password, done) => {}
+      (req, email, password, done) => {
+        User.findOne({ where: { email } }).then((user) => {
+          if (user) {
+            return bcrypt.compare(password, user.password).then((isMatch) => {
+              if (isMatch) {
+                console.log('登入成功')
+                user = user.toJSON();
+                return done(null, user);
+              }
+              console.log('密碼錯誤')
+              return done(null, false);
+            });
+          }
+          console.log('帳號不存在')
+          return done(null, false);
+        });
+      }
     )
   );
 
