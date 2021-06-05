@@ -15,7 +15,6 @@ module.exports = () => {
             return bcrypt.compare(password, user.password).then((isMatch) => {
               if (isMatch) {
                 console.log('登入成功')
-                user = user.toJSON();
                 return done(null, user);
               }
               console.log('密碼錯誤')
